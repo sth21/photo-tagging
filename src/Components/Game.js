@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import uniqid from 'uniqid';
 
 export default function Game(props) {
   // Game State
@@ -12,6 +13,18 @@ export default function Game(props) {
   });
   const [ clickLocation, setClickLocation ] = useState();
   const allDepsHaveChanged = ( gameOver && !isTimerActive );
+  const imgRef = useRef();
+
+  // Handle changes to the image height and width
+  useEffect(() => {
+    const handleResize = () => {
+      imgRef.current.width = imgRef.current.offsetWidth;
+      imgRef.current.height = imgRef.current.offsetHeight;
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Handle the game timer
   useEffect(() => {
@@ -62,14 +75,38 @@ export default function Game(props) {
 
   // Calculate the x % and y % of a click on the game image
   function getClickCoordinates(e) {
-    const widthPercent = e.offsetX / e.target.clientWidth;
-    const heightPercent = e.offsetY / e.target.clientHeight;
-    return [ widthPercent, heightPercent ]
+    const obj = e.target.getBoundingClientRect()
+    const widthPercent = (e.clientX - obj.left ) / e.target.clientWidth;
+    const heightPercent = (e.clientY - obj.top ) / e.target.clientHeight;
+    return [ widthPercent, heightPercent ];
   }
+
+  useEffect(() => {
+    console.log("Click location: " + clickLocation);
+    console.log("ImgRef height: " + imgRef.current.height);
+    console.log("ImgRef width: " + imgRef.current.width);
+  }, [ clickLocation ])
 
   // if clickLocation is defined, render an absolutely positioned element on its location
   // if gameOver is true, render an overlay which allows them to type in a username to submit their data to server
     return (
-      <div>{ time }</div>
+      <main className="game">
+        <div className="info">
+          { props.selectedGameData.objectives.map((obj) => <p key={ uniqid() }>{ obj.name }</p>) }
+          <p>{ time }</p>
+        </div>
+        <div className="img-wrapper" style={{position: "relative"}}>
+          { 
+            (clickLocation !== undefined)
+            ? <dialog style={{position: "absolute", display: "block", zIndex: 10, top: `${ parseFloat(imgRef.current.height, 10) * parseFloat(clickLocation[1], 10) }px`, left: `${ parseFloat(imgRef.current.width, 10) * parseFloat(clickLocation[0], 10) }px`, background: "black", height: "200px", width: "200px"}}>
+                { props.selectedGameData.objectives.map((obj, index) => (
+                  <p role="button" key={ uniqid() } disabled={( objectiveCompletion[`objective${index + 1}`] )} onClick={ () => handleSubmit( obj, `objective${index + 1}`) }>{ obj.name }</p>
+                ))}
+              </dialog> 
+            : null 
+          }
+          <img src={ props.selectedGameData.imageUrl } alt={ props.selectedGameData.mapName } onClick={ handleClick } style={{ maxWidth: "100vw", height: "auto" }} ref={ imgRef } />
+        </div>
+      </main>
     );
   }
