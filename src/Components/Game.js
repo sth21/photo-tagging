@@ -13,18 +13,20 @@ export default function Game(props) {
   });
   const [ clickLocation, setClickLocation ] = useState();
   const allDepsHaveChanged = ( gameOver && !isTimerActive );
+  const [ imgHeight, setImgHeight ] = useState(0);
+  const [ imgWidth, setImgWidth ] = useState(0);
   const imgRef = useRef();
 
   // Handle changes to the image height and width
   useEffect(() => {
     const handleResize = () => {
-      imgRef.current.width = imgRef.current.offsetWidth;
-      imgRef.current.height = imgRef.current.offsetHeight;
+      setImgHeight(imgRef.current.offsetHeight);
+      setImgWidth(imgRef.current.offsetWidth);
     }
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [ imgRef ]);
 
   // Handle the game timer
   useEffect(() => {
@@ -34,6 +36,7 @@ export default function Game(props) {
     } else {
       clearInterval(interval);
     }
+    return () => clearInterval(interval);
   }, [isTimerActive]);
 
   // Check if game is over
@@ -98,7 +101,7 @@ export default function Game(props) {
         <div className="img-wrapper" style={{position: "relative"}}>
           { 
             (clickLocation !== undefined)
-            ? <dialog style={{position: "absolute", display: "block", zIndex: 10, top: `${ parseFloat(imgRef.current.height, 10) * parseFloat(clickLocation[1], 10) }px`, left: `${ parseFloat(imgRef.current.width, 10) * parseFloat(clickLocation[0], 10) }px`, background: "black", height: "200px", width: "200px"}}>
+            ? <dialog style={{position: "absolute", padding: '0px', margin: '0px', display: "block", zIndex: 1, top: `${ imgHeight * parseFloat(clickLocation[1], 10) }px`, left: `${ imgWidth * parseFloat(clickLocation[0], 10) }px`, background: "black", height: "200px", width: "200px"}}>
                 { props.selectedGameData.objectives.map((obj, index) => (
                   <p role="button" key={ uniqid() } disabled={( objectiveCompletion[`objective${index + 1}`] )} onClick={ () => handleSubmit( obj, `objective${index + 1}`) }>{ obj.name }</p>
                 ))}
