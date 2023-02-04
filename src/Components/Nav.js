@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
+import { StyledNav, StyledH1, StyledLink } from './CSSModules';
 
 export default function App() {
     return (
-      <nav>
-        <h1>Photo Tagging</h1>
-        <Link to="/">Menu</Link>
-        <Link to="/leaderboard">Leaderboard</Link>
-      </nav>
+      <StyledNav>
+          <StyledLink to="/leaderboard">Leaderboard</StyledLink>
+          <StyledH1>Photo Tagging</StyledH1>
+          <StyledLink to="/">Menu</StyledLink>
+      </StyledNav>
     );
   }

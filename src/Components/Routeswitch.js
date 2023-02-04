@@ -1,3 +1,5 @@
+import { GlobalStyle } from './CSSModules';
+import { Helmet } from 'react-helmet';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { React, useState, useEffect } from 'react';
 import { DB } from '../firebase';
@@ -59,6 +61,13 @@ export default function Routeswitch() {
   
   return (
     <>
+      <Helmet>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Nunito:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
+      </Helmet>
+      <GlobalStyle />
       <BrowserRouter>
         <Nav />
         <Routes>
