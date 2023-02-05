@@ -57,11 +57,15 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const StyledNav = styled.nav`
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: var(--white);
   display: flex;
   color: var(--black);
   align-items: center;
   justify-content: space-between;
-  padding: 2.5em 0em;
+  padding: 3em 0em;
   text-align: center;
 `;
 
@@ -85,17 +89,39 @@ const StyledApp = styled.main`
     padding: 2.5em 0em;
     width: inherit;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 5em;
     justify-content: center;
 `;
 
 const StyledGameButton = styled.button`
-    background-image: url(${ props => props.imageUrl ? props.imageUrl : "https://via.placeholder.com/150" });
-    background-repeat: no-repeat;
+    cursor: pointer;
+    position: relative;
+    border: 1px solid var(--darkblue);
+    border-radius: 10px;
+    background-color: var(--darkblue);
+    padding: .5em;
     width: 100%;
-    max-height: 300px;
+    max-height: 500px;
     overflow: hidden;
 `;
 
-export { GlobalStyle, StyledNav, StyledLink, StyledH1, StyledApp, StyledGameButton };
+const StyledGamePreview = styled.img`
+  width: 95%;
+  height: auto;
+  padding: 1em;
+`;
+
+const StyledGameLabel = styled.p`
+  position: absolute;
+  top: 0;
+  padding: .75em 0em;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 1.5rem;
+  background-color: var(--darkblue);
+  color: var(--white);
+  width: 100%;
+`;
+
+export { GlobalStyle, StyledNav, StyledLink, StyledH1, StyledApp, StyledGameButton, StyledGamePreview, StyledGameLabel };
