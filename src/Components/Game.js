@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { StyledGame, StyledObjectiveBar, StyledObjectiveLabel, StyledGameImage, StyledDialog } from './CSSModules';
 import uniqid from 'uniqid';
 
 export default function Game(props) {
@@ -78,23 +79,23 @@ export default function Game(props) {
   // if clickLocation is defined, render an absolutely positioned element on its location
   // if gameOver is true, render an overlay which allows them to type in a username to submit their data to server
     return (
-      <main className="game">
-        <div className="info">
-          { props.selectedGameData.objectives.map((obj) => <p key={ uniqid() }>{ obj.name }</p>) }
-          <p>{ time }</p>
-        </div>
+      <StyledGame>
+        <StyledObjectiveBar>
+          { props.selectedGameData.objectives.map((obj) => <StyledObjectiveLabel key={ uniqid() }>{ obj.name }</StyledObjectiveLabel>) }
+          <StyledObjectiveLabel>{ time }</StyledObjectiveLabel>
+        </StyledObjectiveBar>
         <div className="img-wrapper" style={{position: "relative"}}>
           { 
             (clickLocation !== undefined)
-            ? <dialog style={{position: "absolute", padding: '0px', margin: '0px', display: "block", zIndex: 1, top: `${ imgHeight * parseFloat(clickLocation[1], 10) }px`, left: `${ imgWidth * parseFloat(clickLocation[0], 10) }px`, background: "white", height: "200px", width: "200px"}}>
+            ? <StyledDialog imgHeight = { imgHeight } imgWidth = { imgWidth } clickLocation = { clickLocation }>
                 { props.selectedGameData.objectives.map((obj, index) => (
-                  <p role="button" key={ uniqid() } disabled={( objectiveCompletion[index] )} onClick={ () => handleSubmit( obj, index) }>{ obj.name }</p>
+                  <StyledObjectiveLabel role="button" key={ uniqid() } disabled={( objectiveCompletion[index] )} onClick={ () => handleSubmit( obj, index) }>{ obj.name }</StyledObjectiveLabel>
                 ))}
-              </dialog> 
+              </StyledDialog> 
             : null 
           }
-          <img src={ props.selectedGameData.imageUrl } alt={ props.selectedGameData.mapName } onClick={ handleClick } style={{ maxWidth: "100vw", height: "auto" }} ref={ imgRef } />
+          <StyledGameImage src={ props.selectedGameData.imageUrl } alt={ props.selectedGameData.mapName } onClick={ handleClick } ref={ imgRef } />
         </div>
-      </main>
+      </StyledGame>
     );
   }

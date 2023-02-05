@@ -124,4 +124,45 @@ const StyledGameLabel = styled.p`
   width: 100%;
 `;
 
-export { GlobalStyle, StyledNav, StyledLink, StyledH1, StyledApp, StyledGameButton, StyledGamePreview, StyledGameLabel };
+const StyledGame = styled.main`
+    padding: 2.5em 0em;
+    max-width: 100vw;
+`;
+
+const StyledObjectiveBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--black);
+  padding: 1em 0em;
+`;
+
+const StyledObjectiveLabel = styled.p`
+  font-size: 1.25rem;
+`;
+
+const StyledGameImage = styled.img`
+  width: 100%;
+  height: auto;
+`;
+
+const StyledDialog = styled.dialog`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--black);
+  border-radius: 10px;
+  align-items: center;
+  gap: 2em;
+  padding: 2em;
+  margin: 0px;
+  z-index: 1;
+  top: ${ props => props.imgHeight * parseFloat(props.clickLocation[1], 10) }px;
+  left: ${ props => props.imgWidth * parseFloat(props.clickLocation[0], 10) }px;
+`;
+
+export { 
+    GlobalStyle, StyledNav, StyledLink, StyledH1, StyledApp, StyledGameButton, 
+    StyledGamePreview, StyledGameLabel, StyledObjectiveBar, StyledObjectiveLabel, 
+    StyledGame, StyledGameImage, StyledDialog
+};
