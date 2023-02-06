@@ -130,20 +130,40 @@ const StyledGame = styled.main`
 `;
 
 const StyledObjectiveBar = styled.div`
+  position: sticky;
+  top: ${ props => props.top - .5 }px; 
+  z-index: 1;
+  background-color: var(--white);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  color: var(--black);
   padding: 1em 0em;
+`;
+
+const StyledObjectiveContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2em;
+  font-size: 2rem;
+  margin-right: auto;
 `;
 
 const StyledObjectiveLabel = styled.p`
   font-size: 1.25rem;
+  color: ${ props => !props.found ? "var(--black)" : "var(--mediumgray)" };
+  border-bottom: 1px solid;
 `;
 
 const StyledGameImage = styled.img`
   width: 100%;
   height: auto;
+`;
+
+const StyledObjectiveButton = styled(StyledObjectiveLabel)`
+  border: none;
+  border-bottom: none;
+  background: transparent;
+  cursor: ${ props => props.disabled ? "not-allowed" : "pointer" };
 `;
 
 const StyledDialog = styled.dialog`
@@ -164,5 +184,5 @@ const StyledDialog = styled.dialog`
 export { 
     GlobalStyle, StyledNav, StyledLink, StyledH1, StyledApp, StyledGameButton, 
     StyledGamePreview, StyledGameLabel, StyledObjectiveBar, StyledObjectiveLabel, 
-    StyledGame, StyledGameImage, StyledDialog
+    StyledGame, StyledGameImage, StyledDialog, StyledObjectiveContainer, StyledObjectiveButton
 };

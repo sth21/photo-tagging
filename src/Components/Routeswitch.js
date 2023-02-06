@@ -15,8 +15,11 @@ export default function Routeswitch() {
   const [ parisData, setParisData ] = useState();
   const [ rioData, setRioData ] = useState();
   const [ romeData, setRomeData ] = useState();
-
   const [ activeMap, setActiveMap ] = useState();
+
+  // Nav bar height ref for game sticky nav
+  
+  const [ navBarHeight, setNavBarHeight ] = useState(0);
 
   // Get all game data from firebase
   useEffect(() => {
@@ -69,7 +72,7 @@ export default function Routeswitch() {
       </Helmet>
       <GlobalStyle />
       <BrowserRouter>
-        <Nav />
+        <Nav setNavBarHeight={ setNavBarHeight }/>
         <Routes>
           <Route path="/" element =
             { 
@@ -84,7 +87,8 @@ export default function Routeswitch() {
             { 
               <Game 
                 selectedGameData = { activeMap }
-                setActiveMap = { setActiveMap } 
+                setActiveMap = { setActiveMap }
+                navBarHeight = { navBarHeight } 
               /> 
             } 
           /> 

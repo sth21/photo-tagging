@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { StyledGame, StyledObjectiveBar, StyledObjectiveLabel, StyledGameImage, StyledDialog } from './CSSModules';
+import { StyledGame, StyledObjectiveBar, StyledObjectiveLabel, StyledGameImage, StyledDialog, StyledObjectiveContainer, StyledObjectiveButton } from './CSSModules';
 import uniqid from 'uniqid';
 
 export default function Game(props) {
@@ -52,17 +52,20 @@ export default function Game(props) {
   // Handle when game is over
   useEffect(() => {
     if (!allDepsHaveChanged) return;
+    setClickLocation(undefined);
     console.log("GAME OVER");
     // post data to server (Google Auth or let them type in username and ditch this???)
   }, [ allDepsHaveChanged ]);
 
   // Handle when the user clicks the image
   function handleClick(e) {
+    if ( gameOver ) return;
     setClickLocation(getClickCoordinates(e));
   }
 
   // Handle when the user submits an objective guess
   function handleSubmit(objective, index) {
+    if ( gameOver ) return;
     const isInXBounds = ( clickLocation[0] > objective.xbounds[0] && clickLocation[0] < objective.xbounds[1] );
     const isInYBounds = ( clickLocation[1] > objective.ybounds[0] && clickLocation[1] < objective.ybounds[1] );
     if (isInXBounds && isInYBounds) setObjectiveCompletion((cur) => ([ ...cur.slice(0, index), true, ...cur.slice(index + 1) ]));
@@ -80,16 +83,19 @@ export default function Game(props) {
   // if gameOver is true, render an overlay which allows them to type in a username to submit their data to server
     return (
       <StyledGame>
-        <StyledObjectiveBar>
-          { props.selectedGameData.objectives.map((obj) => <StyledObjectiveLabel key={ uniqid() }>{ obj.name }</StyledObjectiveLabel>) }
-          <StyledObjectiveLabel>{ time }</StyledObjectiveLabel>
+        <StyledObjectiveBar top = { props.navBarHeight }>
+          <StyledObjectiveContainer>
+            Objectives:
+            { props.selectedGameData.objectives.map((obj, index) => <StyledObjectiveLabel found={ objectiveCompletion[index] } key={ uniqid() }>{ obj.name }</StyledObjectiveLabel>) }
+          </StyledObjectiveContainer>
+          <StyledObjectiveLabel found={ false }>Timer: { time } seconds</StyledObjectiveLabel>
         </StyledObjectiveBar>
         <div className="img-wrapper" style={{position: "relative"}}>
           { 
             (clickLocation !== undefined)
             ? <StyledDialog imgHeight = { imgHeight } imgWidth = { imgWidth } clickLocation = { clickLocation }>
                 { props.selectedGameData.objectives.map((obj, index) => (
-                  <StyledObjectiveLabel role="button" key={ uniqid() } disabled={( objectiveCompletion[index] )} onClick={ () => handleSubmit( obj, index) }>{ obj.name }</StyledObjectiveLabel>
+                  <StyledObjectiveButton as="button" found={ objectiveCompletion[index] } key={ uniqid() } disabled={( objectiveCompletion[index] )} onClick={ () => handleSubmit( obj, index) }>{ obj.name }</StyledObjectiveButton>
                 ))}
               </StyledDialog> 
             : null 
