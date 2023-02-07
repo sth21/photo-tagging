@@ -4,6 +4,8 @@ import uniqid from 'uniqid';
 import { TextField, Button } from '@mui/material';
 import { addDoc, collection } from 'firebase/firestore';
 import { DB } from '../firebase';
+import { useNavigate } from 'react-router-dom';
+import Leaderboard from './Leaderboard';
 
 export default function Game(props) {
   // Game State
@@ -14,6 +16,9 @@ export default function Game(props) {
   const [ clickLocation, setClickLocation ] = useState();
   const [ imgHeight, setImgHeight ] = useState(0);
   const [ imgWidth, setImgWidth ] = useState(0);
+
+  // Location hook
+  const navigate = useNavigate();
 
   // Img Reference
   const imgRef = useRef();
@@ -65,10 +70,12 @@ export default function Game(props) {
 
   // Handle when the user submits a username
   const handleFormSubmit = async (username, time, map) => {
-    await addDoc(collection(DB, map), { 
+    await addDoc(collection(DB, "leaderboard"), { 
       name: username,
       time: time,
+      map: map,
     });
+    navigate("/leaderboard");
   };
 
   // Handle when the user clicks the image
@@ -93,8 +100,6 @@ export default function Game(props) {
     return [ widthPercent, heightPercent ];
   }
 
-  // if clickLocation is defined, render an absolutely positioned element on its location
-  // if gameOver is true, render an overlay which allows them to type in a username to submit their data to server
     return (
       <StyledGame gameOver = { gameOver }>
         <StyledObjectiveBar>
@@ -117,7 +122,7 @@ export default function Game(props) {
           {
             (gameOver)
             ? <StyledFormWrapper>
-                <StyledForm onSubmit={ () => handleFormSubmit(username, time) }>
+                <StyledForm onSubmit={ (event) => { event.preventDefault(); handleFormSubmit(username, time, props.selectedGameData.mapName) }}>
                 <StyledObjectiveLabel found={ false }>You won in { time }s</StyledObjectiveLabel>
                 <TextField
                   label="Enter username"
