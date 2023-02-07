@@ -127,12 +127,10 @@ const StyledGameLabel = styled.p`
 const StyledGame = styled.main`
     padding: 2.5em 0em;
     max-width: 100vw;
+    background-color: var(--white);
 `;
 
 const StyledObjectiveBar = styled.div`
-  position: sticky;
-  top: ${ props => props.top - .5 }px; 
-  z-index: 1;
   background-color: var(--white);
   display: flex;
   align-items: center;
@@ -181,8 +179,32 @@ const StyledDialog = styled.dialog`
   left: ${ props => props.imgWidth * parseFloat(props.clickLocation[0], 10) }px;
 `;
 
+const StyledFormWrapper = styled.div`
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; 
+    height: 100%; 
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+`;
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--white);
+  padding: 3em 5em;
+  gap: 2em;
+  border-radius: 10px;
+`;
+
 export { 
     GlobalStyle, StyledNav, StyledLink, StyledH1, StyledApp, StyledGameButton, 
     StyledGamePreview, StyledGameLabel, StyledObjectiveBar, StyledObjectiveLabel, 
-    StyledGame, StyledGameImage, StyledDialog, StyledObjectiveContainer, StyledObjectiveButton
+    StyledGame, StyledGameImage, StyledDialog, StyledObjectiveContainer, StyledObjectiveButton, 
+    StyledForm, StyledFormWrapper
 };

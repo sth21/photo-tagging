@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { StyledGame, StyledObjectiveBar, StyledObjectiveLabel, StyledGameImage, StyledDialog, StyledObjectiveContainer, StyledObjectiveButton } from './CSSModules';
+import { StyledGame, StyledObjectiveBar, StyledObjectiveLabel, StyledGameImage, StyledDialog, StyledObjectiveContainer, StyledObjectiveButton, StyledForm, StyledFormWrapper } from './CSSModules';
 import uniqid from 'uniqid';
+import { TextField, Button } from '@mui/material';
+import { addDoc, collection } from 'firebase/firestore';
+import { DB } from '../firebase';
 
 export default function Game(props) {
   // Game State
@@ -14,6 +17,9 @@ export default function Game(props) {
 
   // Img Reference
   const imgRef = useRef();
+
+  // Text Field Value
+  const [ username, setUsername ] = useState('');
 
   // Tests if all conditions met for game over
   const allDepsHaveChanged = ( gameOver && !isTimerActive );
@@ -57,6 +63,14 @@ export default function Game(props) {
     // post data to server (Google Auth or let them type in username and ditch this???)
   }, [ allDepsHaveChanged ]);
 
+  // Handle when the user submits a username
+  const handleFormSubmit = async (username, time, map) => {
+    await addDoc(collection(DB, map), { 
+      name: username,
+      time: time,
+    });
+  };
+
   // Handle when the user clicks the image
   function handleClick(e) {
     if ( gameOver ) return;
@@ -82,8 +96,8 @@ export default function Game(props) {
   // if clickLocation is defined, render an absolutely positioned element on its location
   // if gameOver is true, render an overlay which allows them to type in a username to submit their data to server
     return (
-      <StyledGame>
-        <StyledObjectiveBar top = { props.navBarHeight }>
+      <StyledGame gameOver = { gameOver }>
+        <StyledObjectiveBar>
           <StyledObjectiveContainer>
             Objectives:
             { props.selectedGameData.objectives.map((obj, index) => <StyledObjectiveLabel found={ objectiveCompletion[index] } key={ uniqid() }>{ obj.name }</StyledObjectiveLabel>) }
@@ -98,6 +112,22 @@ export default function Game(props) {
                   <StyledObjectiveButton as="button" found={ objectiveCompletion[index] } key={ uniqid() } disabled={( objectiveCompletion[index] )} onClick={ () => handleSubmit( obj, index) }>{ obj.name }</StyledObjectiveButton>
                 ))}
               </StyledDialog> 
+            : null 
+          }
+          {
+            (gameOver)
+            ? <StyledFormWrapper>
+                <StyledForm onSubmit={ () => handleFormSubmit(username, time) }>
+                <StyledObjectiveLabel found={ false }>You won in { time }s</StyledObjectiveLabel>
+                <TextField
+                  label="Enter username"
+                  value={ username }
+                  onChange={(event) => setUsername(event.target.value)}
+                  error={ !!username }
+                />
+                <Button type="submit" variant="contained">Submit</Button>
+                </StyledForm>
+              </StyledFormWrapper>
             : null 
           }
           <StyledGameImage src={ props.selectedGameData.imageUrl } alt={ props.selectedGameData.mapName } onClick={ handleClick } ref={ imgRef } />

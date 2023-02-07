@@ -17,10 +17,6 @@ export default function Routeswitch() {
   const [ romeData, setRomeData ] = useState();
   const [ activeMap, setActiveMap ] = useState();
 
-  // Nav bar height ref for game sticky nav
-  
-  const [ navBarHeight, setNavBarHeight ] = useState(0);
-
   // Get all game data from firebase
   useEffect(() => {
     const fetchGameData = async () => {
@@ -72,7 +68,7 @@ export default function Routeswitch() {
       </Helmet>
       <GlobalStyle />
       <BrowserRouter>
-        <Nav setNavBarHeight={ setNavBarHeight }/>
+        <Nav />
         <Routes>
           <Route path="/" element =
             { 
@@ -88,7 +84,6 @@ export default function Routeswitch() {
               <Game 
                 selectedGameData = { activeMap }
                 setActiveMap = { setActiveMap }
-                navBarHeight = { navBarHeight } 
               /> 
             } 
           /> 
