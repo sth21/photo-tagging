@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useState, useEffect, useRef } from 'react';
 import { StyledGame, StyledObjectiveBar, StyledObjectiveLabel, StyledGameImage, StyledDialog, StyledObjectiveContainer, StyledObjectiveButton, StyledForm, StyledFormWrapper } from './CSSModules';
 import uniqid from 'uniqid';
@@ -5,15 +7,15 @@ import { TextField, Button } from '@mui/material';
 import { addDoc, collection } from 'firebase/firestore';
 import { DB } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import Leaderboard from './Leaderboard';
 
 export default function Game(props) {
   // Game State
+  const currentGame = props.selectedGameData || JSON.parse(localStorage.getItem("GAME_DATA"));
   const [ gameOver, setGameOver ] = useState(false);
   const [ time, setTime ] = useState(0);
   const [ isTimerActive, setIsTimerActive ] = useState(true);
   const [ objectiveCompletion, setObjectiveCompletion ] = useState([ false, false, false ]);
-  const [ clickLocation, setClickLocation ] = useState();
+  const [ clickLocation, setClickLocation ] = useState(undefined);
   const [ imgHeight, setImgHeight ] = useState(0);
   const [ imgWidth, setImgWidth ] = useState(0);
 
@@ -29,13 +31,28 @@ export default function Game(props) {
   // Tests if all conditions met for game over
   const allDepsHaveChanged = ( gameOver && !isTimerActive );
 
+  // Set current game in local storage in case of page refresh
+  useEffect(() => {
+    const GAME_DATA = localStorage.getItem("GAME_DATA");
+    if ( !GAME_DATA || GAME_DATA === "undefined" || currentGame !== JSON.parse(GAME_DATA)) {
+      localStorage.setItem("GAME_DATA", JSON.stringify(currentGame));
+    }
+  }, []);
+
   // Handle changes to the image height and width
   useEffect(() => {
+    if (!imgRef.current) return;
     const handleResize = () => {
       setImgHeight(imgRef.current.offsetHeight);
       setImgWidth(imgRef.current.offsetWidth);
-    }
-    handleResize();
+    };
+
+    const handleImgLoad = () => {
+      handleResize();
+      imgRef.current.removeEventListener("load", handleImgLoad);
+    };
+
+    imgRef.current.addEventListener("load", handleImgLoad);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [ imgRef ]);
@@ -64,8 +81,6 @@ export default function Game(props) {
   useEffect(() => {
     if (!allDepsHaveChanged) return;
     setClickLocation(undefined);
-    console.log("GAME OVER");
-    // post data to server (Google Auth or let them type in username and ditch this???)
   }, [ allDepsHaveChanged ]);
 
   // Handle when the user submits a username
@@ -100,12 +115,18 @@ export default function Game(props) {
     return [ widthPercent, heightPercent ];
   }
 
+  //TEST TOP
+  useEffect(() => {
+    console.log( "IMG HEIGHT: " + imgHeight );
+    console.log( "CLICK LOCATION: " + clickLocation )
+  }, [ clickLocation, imgHeight ])
+
     return (
       <StyledGame gameOver = { gameOver }>
         <StyledObjectiveBar>
           <StyledObjectiveContainer>
             Objectives:
-            { props.selectedGameData.objectives.map((obj, index) => <StyledObjectiveLabel found={ objectiveCompletion[index] } key={ uniqid() }>{ obj.name }</StyledObjectiveLabel>) }
+            { currentGame.objectives.map((obj, index) => <StyledObjectiveLabel found={ objectiveCompletion[index] } key={ uniqid() }>{ obj.name }</StyledObjectiveLabel>) }
           </StyledObjectiveContainer>
           <StyledObjectiveLabel found={ false }>Timer: { time } seconds</StyledObjectiveLabel>
         </StyledObjectiveBar>
@@ -113,7 +134,7 @@ export default function Game(props) {
           { 
             (clickLocation !== undefined)
             ? <StyledDialog imgHeight = { imgHeight } imgWidth = { imgWidth } clickLocation = { clickLocation }>
-                { props.selectedGameData.objectives.map((obj, index) => (
+                { currentGame.objectives.map((obj, index) => (
                   <StyledObjectiveButton as="button" found={ objectiveCompletion[index] } key={ uniqid() } disabled={( objectiveCompletion[index] )} onClick={ () => handleSubmit( obj, index) }>{ obj.name }</StyledObjectiveButton>
                 ))}
               </StyledDialog> 
@@ -122,7 +143,7 @@ export default function Game(props) {
           {
             (gameOver)
             ? <StyledFormWrapper>
-                <StyledForm onSubmit={ (event) => { event.preventDefault(); handleFormSubmit(username, time, props.selectedGameData.mapName) }}>
+                <StyledForm onSubmit={ (event) => { event.preventDefault(); handleFormSubmit(username, time, currentGame.mapName) }}>
                 <StyledObjectiveLabel found={ false }>You won in { time }s</StyledObjectiveLabel>
                 <TextField
                   label="Enter username"
@@ -135,7 +156,7 @@ export default function Game(props) {
               </StyledFormWrapper>
             : null 
           }
-          <StyledGameImage src={ props.selectedGameData.imageUrl } alt={ props.selectedGameData.mapName } onClick={ handleClick } ref={ imgRef } />
+          <StyledGameImage src={ currentGame.imageUrl } alt={ currentGame.mapName } onClick={ handleClick } ref={ imgRef } />
         </div>
       </StyledGame>
     );
