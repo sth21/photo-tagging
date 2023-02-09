@@ -20,6 +20,13 @@ export default function Leaderboard() {
     }
     fetchGameData();
   }, []);
+
+  const sort = (prevState, actionType) => {
+    const newState = [ ...prevState ];
+    return ( actionType === "time" )
+      ? newState.sort((a, b) => a[actionType] - b[actionType])
+      : newState.sort((a, b) => a[actionType].localeCompare(b[actionType]));
+  };
   
   return (
       <main className="leaderboard">
@@ -29,9 +36,9 @@ export default function Leaderboard() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell style={{fontWeight: "bold", fontSize: "1rem"}}>Player Name</TableCell>
-                    <TableCell style={{fontWeight: "bold", fontSize: "1rem"}}>Time (seconds)</TableCell>
-                    <TableCell style={{fontWeight: "bold", fontSize: "1rem"}}>Map Name</TableCell>
+                    <TableCell onClick={ () => setLeaderboard((prev) => sort(prev, "name")) } style={{fontWeight: "bold", fontSize: "1rem", cursor: "pointer"}}>Player Name</TableCell>
+                    <TableCell onClick={ () => setLeaderboard((prev) => sort(prev, "time")) } style={{fontWeight: "bold", fontSize: "1rem", cursor: "pointer"}}>Time (seconds)</TableCell>
+                    <TableCell onClick={ () => setLeaderboard((prev) => sort(prev, "map")) } style={{fontWeight: "bold", fontSize: "1rem", cursor: "pointer"}}>Map Name</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
