@@ -149,7 +149,7 @@ export default function Game(props) {
                   label="Enter username"
                   value={ username }
                   onChange={(event) => setUsername(event.target.value)}
-                  error={ !!username }
+                  error={ !username }
                 />
                 <Button type="submit" variant="contained">Submit</Button>
                 </StyledForm>
