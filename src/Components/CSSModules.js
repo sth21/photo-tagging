@@ -53,6 +53,17 @@ const GlobalStyle = createGlobalStyle`
   body {
     padding-left: 5em;
     padding-right: 5em;
+
+    @media ( max-width: 650px ) {
+      padding-left: 3em;
+      padding-right: 3em;
+    }
+
+    @media ( max-width: 500px ) {
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+
   }
 `;
 
@@ -78,11 +89,27 @@ const StyledLink = styled(Link)`
   &:hover, &:focus, &:active, &:visited {
     content: none;
   }
+
+  @media ( max-width: 650px ) {
+    font-size: 1.25rem;
+  }
+
+  @media ( max-width: 500px ) {
+    font-size: 1rem;
+  }
 `;
 
 const StyledH1 = styled.h1`
   font-size: 2.25rem;
   font-family: 'Lato', sans-serif;
+
+  @media ( max-width: 650px ) {
+    font-size: 2rem;
+  }
+
+  @media ( max-width: 500px ) {
+    font-size: 1.5rem;
+  }
 `;
 
 const StyledApp = styled.main`
@@ -92,6 +119,17 @@ const StyledApp = styled.main`
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 5em;
     justify-content: center;
+
+    @media ( max-width: 650px ) {
+      gap: 3.5em;
+      padding: 1.5em 0em;
+    }
+
+    @media ( max-width: 500px ) {
+      gap: 2em;
+      padding: .5em 0em;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
 `;
 
 const StyledGameButton = styled.button`
@@ -144,12 +182,26 @@ const StyledObjectiveContainer = styled.div`
   gap: 2em;
   font-size: 2rem;
   margin-right: auto;
+
+  @media ( max-width: 1000px ) {
+    font-size: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  @media ( max-width: 600px ) {
+    font-size: 1rem;
+    gap: .5rem;
+  }
 `;
 
 const StyledObjectiveLabel = styled.p`
   font-size: 1.25rem;
   color: ${ props => !props.found ? "var(--black)" : "var(--mediumgray)" };
   border-bottom: 1px solid;
+
+  @media ( max-width: 1000px ) {
+    font-size: 1rem;
+  }
 `;
 
 const StyledGameImage = styled.img`

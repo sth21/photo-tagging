@@ -115,49 +115,43 @@ export default function Game(props) {
     return [ widthPercent, heightPercent ];
   }
 
-  //TEST TOP
-  useEffect(() => {
-    console.log( "IMG HEIGHT: " + imgHeight );
-    console.log( "CLICK LOCATION: " + clickLocation )
-  }, [ clickLocation, imgHeight ])
-
-    return (
-      <StyledGame gameOver = { gameOver }>
-        <StyledObjectiveBar>
-          <StyledObjectiveContainer>
-            Objectives:
-            { currentGame.objectives.map((obj, index) => <StyledObjectiveLabel found={ objectiveCompletion[index] } key={ uniqid() }>{ obj.name }</StyledObjectiveLabel>) }
-          </StyledObjectiveContainer>
-          <StyledObjectiveLabel found={ false }>Timer: { time } seconds</StyledObjectiveLabel>
-        </StyledObjectiveBar>
-        <div className="img-wrapper" style={{position: "relative"}}>
-          { 
-            (clickLocation !== undefined)
-            ? <StyledDialog imgHeight = { imgHeight } imgWidth = { imgWidth } clickLocation = { clickLocation }>
-                { currentGame.objectives.map((obj, index) => (
-                  <StyledObjectiveButton as="button" found={ objectiveCompletion[index] } key={ uniqid() } disabled={( objectiveCompletion[index] )} onClick={ () => handleSubmit( obj, index) }>{ obj.name }</StyledObjectiveButton>
-                ))}
-              </StyledDialog> 
-            : null 
-          }
-          {
-            (gameOver)
-            ? <StyledFormWrapper>
-                <StyledForm onSubmit={ (event) => { event.preventDefault(); handleFormSubmit(username, time, currentGame.mapName) }}>
-                <StyledObjectiveLabel found={ false }>You won in { time }s</StyledObjectiveLabel>
-                <TextField
-                  label="Enter username"
-                  value={ username }
-                  onChange={(event) => setUsername(event.target.value)}
-                  error={ !username }
-                />
-                <Button type="submit" variant="contained">Submit</Button>
-                </StyledForm>
-              </StyledFormWrapper>
-            : null 
-          }
-          <StyledGameImage src={ currentGame.imageUrl } alt={ currentGame.mapName } onClick={ handleClick } ref={ imgRef } />
-        </div>
-      </StyledGame>
-    );
-  }
+  return (
+    <StyledGame gameOver = { gameOver }>
+      <StyledObjectiveBar>
+        <StyledObjectiveContainer>
+          Objectives:
+          { currentGame.objectives.map((obj, index) => <StyledObjectiveLabel found={ objectiveCompletion[index] } key={ uniqid() }>{ obj.name }</StyledObjectiveLabel>) }
+        </StyledObjectiveContainer>
+        <StyledObjectiveLabel found={ false }>Timer: { time } seconds</StyledObjectiveLabel>
+      </StyledObjectiveBar>
+      <div className="img-wrapper" style={{position: "relative"}}>
+        { 
+          (clickLocation !== undefined)
+          ? <StyledDialog imgHeight = { imgHeight } imgWidth = { imgWidth } clickLocation = { clickLocation }>
+              { currentGame.objectives.map((obj, index) => (
+                <StyledObjectiveButton as="button" found={ objectiveCompletion[index] } key={ uniqid() } disabled={( objectiveCompletion[index] )} onClick={ () => handleSubmit( obj, index) }>{ obj.name }</StyledObjectiveButton>
+              ))}
+            </StyledDialog> 
+          : null 
+        }
+        {
+          (gameOver)
+          ? <StyledFormWrapper>
+              <StyledForm onSubmit={ (event) => { event.preventDefault(); handleFormSubmit(username, time, currentGame.mapName) }}>
+              <StyledObjectiveLabel found={ false }>You won in { time }s</StyledObjectiveLabel>
+              <TextField
+                label="Enter username"
+                value={ username }
+                onChange={(event) => setUsername(event.target.value)}
+                error={ !username }
+              />
+              <Button type="submit" variant="contained">Submit</Button>
+              </StyledForm>
+            </StyledFormWrapper>
+          : null 
+        }
+        <StyledGameImage src={ currentGame.imageUrl } alt={ currentGame.mapName } onClick={ handleClick } ref={ imgRef } />
+      </div>
+    </StyledGame>
+  );
+}

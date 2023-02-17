@@ -15,5 +15,5 @@ test("Goes to main page on link click", () => {
     userEvent.click(leaderBoardLink);
     const homeLink = screen.getByRole("link", { name: /menu/i });
     userEvent.click(homeLink);
-    expect(screen.getByRole("main").className).toBe("app");
+    expect(screen.getByRole("main").dataset.module).toBe("app");
 })

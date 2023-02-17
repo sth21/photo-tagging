@@ -3,5 +3,5 @@ import Routeswitch from '../Components/Routeswitch';
 
 test("Loads App Component by default", () => {
     render(<Routeswitch />);
-    expect(screen.getByRole("main").className).toBe("app");
+    expect(screen.getByRole("main").dataset.module).toBe("app");
 });
