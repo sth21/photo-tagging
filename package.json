@@ -20,6 +20,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d public -r https://github.com/sth21/photo-tagging",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
