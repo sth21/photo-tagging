@@ -21,7 +21,7 @@
   },
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build https://github.com/sth21/photo-tagging",
+    "deploy": "gh-pages -d -r build https://github.com/sth21/photo-tagging",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
